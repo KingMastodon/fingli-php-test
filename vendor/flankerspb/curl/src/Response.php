@@ -178,7 +178,16 @@ class Response implements ResponseInterface
 		switch ($this->mimeType)
 		{
 			case 'application/json':
-				$this->data = json_decode($this->body, true);
+				$body = json_decode($this->body, true);
+				if(is_array($body)){
+					$this->data = $body;
+				}
+				elseif(is_bool($body)){
+					$this->data = [$body];
+				}else{
+					var_dump($body);
+					throw new \Exception('Responce data must be type of array or bool');
+				}				
 				break;
 		}
 	}

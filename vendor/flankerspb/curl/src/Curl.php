@@ -320,7 +320,7 @@ class Curl
 
 		foreach ($this->headers as $key => $value)
 		{
-			$headers[] = "$key: $value";
+			$headers[] = "$value";
 		}
 
 		return $headers;
