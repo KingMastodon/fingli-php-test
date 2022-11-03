@@ -4,7 +4,7 @@ namespace fl\curl;
 
 require(__DIR__ . '/../vendor/autoload.php');
 
-session_start();
+//session_start();
 
 class CurlRequest
 {
@@ -19,7 +19,7 @@ class CurlRequest
     public function __construct()
     {
         $userAgent = UserAgentDesktop::rand();
-        //$this->defaultOptions[CURLOPT_USERAGENT] = $userAgent;
+        $this->defaultOptions[CURLOPT_USERAGENT] = $userAgent;
     }
 
     public function login()
@@ -33,23 +33,35 @@ class CurlRequest
         $postOptions[CURLOPT_HTTPHEADER] = [
             'Content-Type: application/json',
             'Origin: https://pub.fsa.gov.ru',
-            'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
             'sec-ch-ua-mobile: ?0',
             'sec-ch-ua-platform: "Windows"',
             'Sec-Fetch-Mode: cors',
             'Sec-Fetch-Dest: empty',
             'Sec-Fetch-Site: same-origin',
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
-
         ];
         $postOptions[CURLOPT_POST] = true;
         $curl = new Curl($postOptions, 1);
         return $curl->post('https://pub.fsa.gov.ru/login');
     }
 
-    public function filter(string $token)
+    public function filter(string $token, $filterParams)
     {
-
+        $filterConstructor = [
+            "size" => '25',
+            "filter" => [
+                "status" => [ 
+                   '6'
+                ],
+            ],
+            "endDate" =>[
+                "minDate"=>'',
+                "maxDate"=> ''
+            ],
+            "regDate" =>[
+                "minDate"=>'',
+                "maxDate"=> ''
+            ],
+        ];
         $jayParsedAry = [
             "size" => 10,
             "page" => 0,
@@ -100,7 +112,7 @@ class CurlRequest
         $authorization = "Authorization: " . $token;
         $postOptions = $this->defaultOptions;
 
-        $postOptions[CURLOPT_POSTFIELDS] = json_encode($jayParsedAry);
+        $postOptions[CURLOPT_POSTFIELDS] = json_encode($filterParams);
         $postOptions[CURLOPT_HEADER] = true;
         $postOptions[CURLOPT_POST] = true;
         $postOptions[CURLOPT_RETURNTRANSFER] = true;
@@ -109,13 +121,11 @@ class CurlRequest
             $authorization,
             'Referer: https://pub.fsa.gov.ru/rds/declaration',
             'Host: pub.fsa.gov.ru',
-            'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
             'sec-ch-ua-mobile: ?0',
             'sec-ch-ua-platform: "Windows"',
             'Sec-Fetch-Mode: cors',
             'Sec-Fetch-Dest: empty',
             'Sec-Fetch-Site: same-origin',
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         ];
 
         $curl = new Curl($postOptions, 1);
@@ -146,8 +156,6 @@ class CurlRequest
         $authorization = "Authorization: Bearer null";
         $encodedData = json_encode($jayParsedAry);
         $curl = curl_init($url);
-        $data_string = urlencode(json_encode($jayParsedAry));
-        //curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_HTTPHEADER, [            
             'Content-Type: application/json',
@@ -176,30 +184,3 @@ class CurlRequest
 
 
 
-//$pageDeclaration = $curl->get('https://pub.fsa.gov.ru/rds/declaration');
-
-$currentToken = $_SESSION["currentToken"];
-
-
-
-$page = new CurlRequest;
-
-
-$isTokenCorrectRequest = $page->checkToken($currentToken);
-$isTokenCorrect = filter_var($isTokenCorrectRequest->body, FILTER_VALIDATE_BOOLEAN);
-var_dump($isTokenCorrect);
-if(!$isTokenCorrect){
-    $resultLogin = $page->login();
-    $resultLoginHeaders = $resultLogin->headers;
-    $resultLoginHeadersAuthorisation = $resultLoginHeaders['authorization'];
-    var_dump($_SESSION["currentToken"]);
-    $_SESSION["currentToken"] = $resultLoginHeadersAuthorisation[0];
-}
-
-
-
-//echo '<pre>' . var_dump($resultLoginHeadersAuthorisation[0], true) . '</pre>';
-echo '<pre>' . var_export($page->filter($_SESSION["currentToken"]), true) . '</pre>';
-//echo '<pre>' . var_export($page->filterAlt(), true) . '</pre>';
-//echo '<pre>' . var_export($page->checkToken(), true) . '</pre>';
-//print_r();
