@@ -125,8 +125,8 @@ $date   = '2022';
 			<span class="text-muted"><?= "$date. $author" ?></span>
 		</div>
 	</footer>
-	<script src="../js/jquery-3.6.1.min.js"></script>
-	<script src="../ajax/ajax.js"></script>
+	<script src="js/jquery-3.6.1.min.js"></script>
+	<script src="ajax/ajax.js"></script>
 </body>
 
 </html>

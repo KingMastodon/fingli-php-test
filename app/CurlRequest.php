@@ -84,40 +84,7 @@ class CurlRequest
         return $curl->get('https://pub.fsa.gov.ru/token/is/actual/' . $token);
     }
 
-    public function filterAlt()
-    {
-        $url = 'https://pub.fsa.gov.ru/login';
-        $jayParsedAry = [
-            'username' => 'anonymous',
-            'password' => 'hrgesf7HDR67Bd'
-        ];
-        $authorization = "Authorization: Bearer null";
-        $encodedData = json_encode($jayParsedAry);
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [            
-            'Content-Type: application/json',
-            $authorization,
-            'Referer: https://pub.fsa.gov.ru/rds/declaration',
-            'Host: pub.fsa.gov.ru',    
-        ]);
 
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedData);
-        curl_setopt($curl, CURLINFO_HEADER_OUT, true);
-        $httpReturnCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $result = curl_exec($curl);
-        $error = curl_error($curl);
-        curl_close($curl);
-        var_dump($httpReturnCode);
-
-        echo '<pre>' . var_export(curl_getinfo($curl, CURLINFO_HEADER_OUT ), true) . '</pre>';
-        var_dump($result);
-        var_dump($error);
-        return $result;
-    }
 }
 
 
