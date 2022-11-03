@@ -46,69 +46,7 @@ class CurlRequest
 
     public function filter(string $token, $filterParams)
     {
-        $filterConstructor = [
-            "size" => '25',
-            "filter" => [
-                "status" => [ 
-                   '6'
-                ],
-            ],
-            "endDate" =>[
-                "minDate"=>'',
-                "maxDate"=> ''
-            ],
-            "regDate" =>[
-                "minDate"=>'',
-                "maxDate"=> ''
-            ],
-        ];
-        $jayParsedAry = [
-            "size" => 10,
-            "page" => 0,
-            "filter" => [
-                "status" => [
-                    6
-                ],
-                "idDeclType" => [],
-                "idCertObjectType" => [],
-                "idProductType" => [],
-                "idGroupRU" => [],
-                "idGroupEEU" => [],
-                "idTechReg" => [],
-                "idApplicantType" => [],
-                "regDate" => [
-                    "minDate" => null,
-                    "maxDate" => null
-                ],
-                "endDate" => [
-                    "minDate" => null,
-                    "maxDate" => null
-                ],
-                "columnsSearch" => [
-                    [
-                        "name" => "number",
-                        "search" => "",
-                        "type" => 8,
-                        "translated" => false
-                    ]
-                ],
-                "idProductOrigin" => [],
-                "idProductEEU" => [],
-                "idProductRU" => [],
-                "idDeclScheme" => [],
-                "awaitForApprove" => null,
-                "awaitOperatorCheck" => null,
-                "editApp" => null,
-                "violationSendDate" => null,
-                "isProtocolInvalid" => null
-            ],
-            "columnsSort" => [
-                [
-                    "column" => "declDate",
-                    "sort" => "DESC"
-                ]
-            ]
-        ];
+        
         $authorization = "Authorization: " . $token;
         $postOptions = $this->defaultOptions;
 

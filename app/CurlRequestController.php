@@ -11,20 +11,31 @@ session_start();
 
 $filterConstructor = [
     "size" => $_POST['size'],
-    "filter" => [
-        "status" => [ $_POST['status'],
+    "filter" =>
+    [
+        'columnsSearch' => [
+            [
+                "name" => "number",
+                "search" => $_POST['number'],
+                "type" => "8",
+                "translated" => "false"
+            ]
+        ],
+        "endDate" => [
+            "minDate" => $_POST["endDate_minDate"],
+            "maxDate" => $_POST["endDate_maxDate"]
+        ],
+        "regDate" => [
+            "minDate" => $_POST["regDate_minDate"],
+            "maxDate" => $_POST["regDate_maxDate"]
         ],
     ],
-    "endDate" =>[
-        "minDate"=>$_POST["endDate_minDate"],
-        "maxDate"=> $_POST["endDate_maxDate"]
-    ],
-    "regDate" =>[
-        "minDate"=>$_POST["regDate_minDate"],
-        "maxDate"=> $_POST["regDate_maxDate"]
-    ],
 ];
-
+if (!empty($_POST['status'])) {
+    $filterConstructor["filter"]["status"] = [
+        $_POST['status']
+    ];
+}
 
 $currentToken = $_SESSION["currentToken"];
 
@@ -32,7 +43,7 @@ $page = new CurlRequest;
 
 $isTokenCorrectRequest = $page->checkToken($currentToken);
 $isTokenCorrect = filter_var($isTokenCorrectRequest->body, FILTER_VALIDATE_BOOLEAN);
-if(!$isTokenCorrect){
+if (!$isTokenCorrect) {
     $resultLogin = $page->login();
     $resultLoginHeaders = $resultLogin->headers;
     $resultLoginHeadersAuthorisation = $resultLoginHeaders['authorization'];
@@ -41,29 +52,22 @@ if(!$isTokenCorrect){
 
 $filterResult = $page->filter($_SESSION["currentToken"], $filterConstructor);
 
-echo json_encode($filterResult->data['items']);
 
-/*
+if($filterResult->code == '200'){
+    $result = array_map(function ($object) {
 
-$currentToken = $_SESSION["currentToken"];
-
-
-
-$page = new CurlRequest;
-
-
-$isTokenCorrectRequest = $page->checkToken($currentToken);
-$isTokenCorrect = filter_var($isTokenCorrectRequest->body, FILTER_VALIDATE_BOOLEAN);
-var_dump($isTokenCorrect);
-if(!$isTokenCorrect){
-    $resultLogin = $page->login();
-    $resultLoginHeaders = $resultLogin->headers;
-    $resultLoginHeadersAuthorisation = $resultLoginHeaders['authorization'];
-    var_dump($_SESSION["currentToken"]);
-    $_SESSION["currentToken"] = $resultLoginHeadersAuthorisation[0];
+        $keys = ['id', 'idStatus','number', 'declDate', 'declEndDate', 'productFullName', 'applicantName', 'manufacterName', 'productOrig', 'declObjectType'];    
+        $object = array_filter($object, fn($n) => in_array($n, $keys) , ARRAY_FILTER_USE_KEY);        
+        return $object;
+    
+    }, $filterResult->data['items']);
+}else{
+    $result['code'] = $filterResult->code;
+    $result['errorText'] = $filterResult->errorText;
+    $result['errorDesc'] = $filterResult->errorDesc;
+    $errorDescSecondary = json_decode($filterResult->body, true);
+    $result['errorDesc2'] = $errorDescSecondary['error'] . ':  ' . $errorDescSecondary['message'];
 }
 
-$filterResult = $page->filter($_SESSION["currentToken"], []);
+echo json_encode($result);
 
-echo '<pre>' . var_export($filterResult->data['items'], true) . '</pre>';
-*/

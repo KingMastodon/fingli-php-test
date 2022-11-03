@@ -3,7 +3,6 @@
 $title  = 'Тест для php-разработчиков';
 $author = 'Fingli Group';
 $date   = '2022';
-require(__DIR__ . '/../vendor/autoload.php');
 ?>
 <!DOCTYPE html>
 <html lang="ru" class="h-100">
@@ -33,10 +32,11 @@ require(__DIR__ . '/../vendor/autoload.php');
 						<div class="mb-3">
 							<label class="form-label" for="status">Статус</label>
 							<select class="form-select" id="status" name="status" required>
+								<option value="">- Любой -</option>
 								<option value="6">- Действует -</option>
 								<option value="20">- Черновик -</option>
 								<option value="13">- Отправлен -</option>
-								<option value="18">- Удалён -</option>								
+								<option value="18">- Удалён -</option>
 								<option value="14">- Прекращён -</option>
 								<option value="15">- Приостановлен -</option>
 								<option value="19">- Частично приостановлен -</option>
@@ -49,8 +49,10 @@ require(__DIR__ . '/../vendor/autoload.php');
 								<option value="11">- Выдано Недействителен -</option>
 							</select>
 						</div>
-
-
+						<div class="mb-3">
+							<label for="number">Номер соответствия</label>
+							<input type="text" class="form-control" id="number" name="number" placeholder="">
+						</div>
 
 						<div class="mb-3">
 							<p class="mt-2">дата регистрации декларации:</p>
@@ -58,7 +60,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 								<label for="start">с:</label>
 								<input type="date" id="regDate_minDate" name="regDate_minDate" value="2022-11-03">
 							</div>
-							<div  class="d-inline">
+							<div class="d-inline">
 								<label for="finish">по:</label>
 								<input type="date" id="regDate_maxDate" name="regDate_maxDate" value="2022-11-03">
 							</div>
@@ -68,7 +70,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 								<label for="start">с:</label>
 								<input type="date" id="endDate_minDate" name="endDate_minDate" value="2022-11-03">
 							</div>
-							<div  class="d-inline">
+							<div class="d-inline">
 								<label for="finish">по:</label>
 								<input type="date" id="endDate_maxDate" name="endDate_maxDate" value="2022-11-03">
 							</div>
@@ -124,7 +126,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 		</div>
 	</footer>
 	<script src="../js/jquery-3.6.1.min.js"></script>
-	<script src="../js/ajax.js"></script>
+	<script src="../ajax/ajax.js"></script>
 </body>
 
 </html>
